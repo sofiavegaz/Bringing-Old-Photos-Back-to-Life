@@ -178,6 +178,7 @@ class UnPairOldPhotos_SR(BaseDataset):  ## Synthetic + Real Old
         self.isImage = 'domainA' in opt.name
         self.task = 'old_photo_restoration_training_vae'
         self.dir_AB = opt.dataroot
+        self.switch = 1
         if self.isImage:
 
             self.load_img_dir_L_old=os.path.join(self.dir_AB,"Real_L_old.bigfile")
@@ -219,18 +220,24 @@ class UnPairOldPhotos_SR(BaseDataset):  ## Synthetic + Real Old
         degradation=None
         if self.isImage: ## domain A , contains 2 kinds of data: synthetic + real_old
             P=random.uniform(0,2)
-            if P>=0 and P<1:
-                if random.uniform(0,1)<0.5:
-                    sampled_dataset=self.loaded_imgs_L_old
-                    self.load_img_dir=self.load_img_dir_L_old
-                else:
-                    sampled_dataset=self.loaded_imgs_RGB_old
-                    self.load_img_dir=self.load_img_dir_RGB_old
+            if self.switch == 1:
+                sampled_dataset=self.loaded_imgs_L_old
+                self.load_img_dir=self.load_img_dir_L_old
+                self.switch = 2
                 is_real_old=1
-            if P>=1 and P<2:
+            elif self.switch == 2:
+                sampled_dataset=self.loaded_imgs_RGB_old
+                self.load_img_dir=self.load_img_dir_RGB_old
+                self.switch = 3
+                is_real_old=1
+            else:
                 sampled_dataset=self.filtered_imgs_clean
                 self.load_img_dir=self.load_img_dir_clean
                 degradation=1
+                if self.switch == 3:
+                    self.switch = 4
+                else:
+                    self.switch = 1
         else:
 
             sampled_dataset=self.filtered_imgs_clean
