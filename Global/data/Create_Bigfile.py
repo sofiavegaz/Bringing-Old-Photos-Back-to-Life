@@ -29,9 +29,9 @@ def make_dataset(dir):
     return images
 
 ### Modify these 3 lines in your own environment
-indir="/inputs"
+indir="inputs"
 target_folders=['VOC_RGB_JPEGImages','Real_L_old','Real_RGB_old']
-out_dir ="/output_bigfile"
+out_dir ="output_bigfile"
 ###
 
 if os.path.exists(out_dir) is False:
